@@ -1,15 +1,12 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using API.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data
 {
-    public class Seed
+  public class Seed
     {
         public static async Task SeedUsers(DataContext context)
         {
