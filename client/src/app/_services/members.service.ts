@@ -14,8 +14,8 @@ export class MembersService {
 
   constructor(private http: HttpClient) { }
 
-  getMembers(){
-    if(this.members.length > 0) return of (this.members)
+  getMembers() {
+    if (this.members.length > 0) return of(this.members)
     return this.http.get<Member[]>(this.baseUrl + 'users').pipe(
       map(members => {
         this.members = members;
@@ -25,18 +25,25 @@ export class MembersService {
   }
 
   getMember(username: string) {
-    const member = this.members.find( x => x.userName === username);
-    if(member) return of (member);
+    const member = this.members.find(x => x.userName === username);
+    if (member) return of(member);
     return this.http.get<Member>(`${this.baseUrl}users/${username}`);
-}
+  }
 
-updateMember(member: Member){
-  return this.http.put(this.baseUrl + 'users', member ).pipe(
-    map(() => {
-      const index = this.members.indexOf(member);
-      this.members[index] = {...this.members[index], ...member}
-    })
-  )
-}
+  updateMember(member: Member) {
+    return this.http.put(this.baseUrl + 'users', member).pipe(
+      map(() => {
+        const index = this.members.indexOf(member);
+        this.members[index] = { ...this.members[index], ...member }
+      })
+    )
+  }
 
+  setMainPhoto(photoId: number) {
+    return this.http.put(this.baseUrl + 'users/set-main-photo/' + photoId, {});
+  }
+
+  deletePhoto(photoId: number) {
+    return this.http.delete(this.baseUrl + 'users/delete-photo/' + photoId);
+  }
 }
