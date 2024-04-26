@@ -13,7 +13,7 @@ import { environment } from 'src/environments/environment';
   templateUrl: './photo-editor.component.html',
   styleUrls: ['./photo-editor.component.css']
 })
-export class PhotoEditorComponent implements OnInit{
+export class PhotoEditorComponent implements OnInit {
   @Input() member: Member | undefined;
   uploader: FileUploader | undefined;
   hasBaseDropZoneOver = false;
@@ -23,7 +23,7 @@ export class PhotoEditorComponent implements OnInit{
   constructor(private accountService: AccountService, private memberService: MembersService) {
     this.accountService.currentUser$.pipe(take(1)).subscribe({
       next: user => {
-        if(user) this.user = user;
+        if (user) this.user = user;
       }
     })
   }
@@ -32,38 +32,38 @@ export class PhotoEditorComponent implements OnInit{
     this.initializeUploader();
   }
 
-  fileOverBase(e: any){
+  fileOverBase(e: any) {
     this.hasBaseDropZoneOver = e;
   }
 
-  setMainPhoto(photo: Photo){
+  setMainPhoto(photo: Photo) {
     this.memberService.setMainPhoto(photo.id).subscribe({
       next: () => {
-        if(this.user && this.member){
+        if (this.user && this.member) {
           this.user.photoUrl = photo.url;
           this.accountService.setCurrentUser(this.user);
           this.member.photoUrl = photo.url;
           this.member.photos.forEach(p => {
-            if(p.isMain) p.isMain = false;
-            if(p.id === photo.id) p.isMain = true;
+            if (p.isMain) p.isMain = false;
+            if (p.id === photo.id) p.isMain = true;
           })
         }
       }
-      
+
     })
   }
 
-  deletePhoto(photoId: number){
+  deletePhoto(photoId: number) {
     this.memberService.deletePhoto(photoId).subscribe({
       next: _ => {
-        if(this.member) {
+        if (this.member) {
           this.member.photos = this.member.photos.filter(x => x.id != photoId);
         }
       }
     })
   }
 
-  initializeUploader(){
+  initializeUploader() {
     this.uploader = new FileUploader({
       url: this.baseUrl + 'users/add-photo',
       authToken: 'Bearer ' + this.user?.token,
@@ -78,9 +78,16 @@ export class PhotoEditorComponent implements OnInit{
     }
 
     this.uploader.onSuccessItem = (item, response, status, headers) => {
-      if(response){
+      if (response) {
         const photo = JSON.parse(response);
         this.member?.photos.push(photo);
+
+        if (photo.isMain && this.user && this.member) {
+          this.user.photoUrl = photo.url;
+          this.member.photoUrl = photo.url;
+          this.accountService.setCurrentUser(this.user);
+        }
+
       }
     }
   }
