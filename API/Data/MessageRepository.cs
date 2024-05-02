@@ -42,9 +42,9 @@ namespace API.Data
 
       query = messageParams.Container switch
       {
-        "Inbox" => query.Where(u => u.RecipientUsername == messageParams.Username),
-        "Outbox" => query.Where(u => u.SenderUsername == messageParams.Username),
-        _ => query.Where(u => u.RecipientUsername == messageParams.Username && u.DateRead == null)
+        "Inbox" => query.Where(u => u.RecipientUsername == messageParams.Username && u.RecipientDeleted == false),
+        "Outbox" => query.Where(u => u.SenderUsername == messageParams.Username && u.SenderDeleted == false),
+        _ => query.Where(u => u.RecipientUsername == messageParams.Username && u.RecipientDeleted == false && u.DateRead == null)
       };
 
       var messages = query.ProjectTo<MessageDto>(_mapper.ConfigurationProvider);
@@ -57,22 +57,27 @@ namespace API.Data
       var messages = await _context.Messages
         .Include(u => u.Sender).ThenInclude(p => p.Photos)
         .Include(u => u.Recipient).ThenInclude(p => p.Photos)
-        .Where(m => m.RecipientUsername == currentUserName && m.SenderUsername == recipientUserName || m.RecipientUsername == currentUserName && m.SenderUsername == currentUserName)
-        .OrderByDescending(m => m.MessageSent)
+        .Where(m => m.RecipientUsername == currentUserName &&
+                m.RecipientDeleted == false &&
+                m.SenderUsername == recipientUserName ||
+                m.RecipientUsername == recipientUserName && m.SenderDeleted == false &&
+                m.SenderUsername == currentUserName)
+        .OrderBy(m => m.MessageSent)
         .ToListAsync();
 
-        var unreadMessages = messages.Where(m => m.DateRead == null && m.RecipientUsername == currentUserName).ToList();
+      var unreadMessages = messages.Where(m => m.DateRead ==  null && m.RecipientUsername == currentUserName).ToList();
 
-        if(unreadMessages.Any())
+      if (unreadMessages.Any())
+      {
+        foreach (var message in unreadMessages)
         {
-          foreach(var message in unreadMessages){
-            message.DateRead = DateTime.UtcNow;
-          }
-
-          await _context.SaveChangesAsync();
+          message.DateRead = DateTime.UtcNow;
         }
 
-        return _mapper.Map<IEnumerable<MessageDto>>(messages);
+        await _context.SaveChangesAsync();
+      }
+
+      return _mapper.Map<IEnumerable<MessageDto>>(messages);
     }
 
     public async Task<bool> SaveAllAsync()
