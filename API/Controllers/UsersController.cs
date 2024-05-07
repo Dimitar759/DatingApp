@@ -25,6 +25,9 @@ public class UsersController : BaseApiController
     _mapper = mapper;
     _photoService = photoService;
   }
+  
+  [Authorize(Roles = "Admin")]
+
 
   [HttpGet]
   public async Task<ActionResult<PagedList<MemberDto>>> GetUsers([FromQuery] UserParams userParams)
@@ -42,6 +45,8 @@ public class UsersController : BaseApiController
 
     return Ok(users);
   }
+
+  [Authorize(Roles ="Member")]
 
   [HttpGet("{username}")]
   public async Task<ActionResult<MemberDto>> GetUser(string username)
