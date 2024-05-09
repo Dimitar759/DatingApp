@@ -32,18 +32,17 @@ export class MemeberListComponent implements OnInit{
   }
 
   loadMembers() {
-    if(this.userParams) {
+    if (this.userParams !== undefined) { // Check if userParams is not undefined
       this.memberService.setUserParams(this.userParams)
       this.memberService.getMembers(this.userParams).subscribe({
         next: response => {
-          if(response.result && response.pagination){
+          if (response.result && response.pagination) {
             this.members = response.result;
             this.pagination = response.pagination;
           }
         }
       })
     }
-    
   }
 
   resetFilters(){

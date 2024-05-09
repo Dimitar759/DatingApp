@@ -50,23 +50,23 @@ export class MembersService {
  }
 
   getMembers(userParams: UserParams) {
-    const response = this.memberCache.get(Object.values(userParams).join('-'));
-
-    if (response) return of(response);
+    var response = this.memberCache.get(Object.values(userParams).join('-'));
+    if (response) {
+      return of(response);
+    }
 
     let params = getPaginationHeaders(userParams.pageNumber, userParams.pageSize);
 
-    params = params.append('minAge', userParams.minAge);
-    params = params.append('maxAge', userParams.maxAge);
+    params = params.append('minAge', userParams.minAge.toString());
+    params = params.append('maxAge', userParams.maxAge.toString());
     params = params.append('gender', userParams.gender);
     params = params.append('orderBy', userParams.orderBy);
 
-    return getPaginatedResults<Member[]>(this.baseUrl + 'users', params, this.http).pipe(
-      map(response => {
+    return getPaginatedResults<Member[]>(this.baseUrl + 'users', params, this.http)
+      .pipe(map(response => {
         this.memberCache.set(Object.values(userParams).join('-'), response);
         return response;
-      })
-    )
+      }))
   }
 
   getMember(username: string) {
