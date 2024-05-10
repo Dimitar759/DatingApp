@@ -1,9 +1,15 @@
 {
   "dependencies": {
+    "@angular/common": "^17.3.8",
+    "@angular/http": "^7.2.16",
+    "@microsoft/signalr": "^8.0.0",
     "ngx-timeago": "^3.0.0",
+    "rxjs": "^7.8.1",
     "tslib": "^2.6.2"
   },
   "devDependencies": {
-    "@types/jasmine": "^5.1.4"
+    "@types/jasmine": "^5.1.4",
+    "@types/node": "^20.12.11",
+    "typescript": "^5.4.5"
   }
 }

@@ -95,8 +95,7 @@ export class MembersService {
     return this.http.delete(this.baseUrl + 'users/delete-photo/' + photoId);
   }
 
-  addLike(username: string)
-  {
+  addLike(username: string) {
     return this.http.post(this.baseUrl + 'likes/' + username, {});
   }
 
@@ -106,7 +105,7 @@ export class MembersService {
     params = params.append('predicate', predicate)
 
     return getPaginatedResults<Member[]>(this.baseUrl + 'likes', params, this.http)
-  }
+  } 
 
  
 }
