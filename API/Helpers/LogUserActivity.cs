@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.Extensions;
 using API.Interfaces;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -17,10 +13,10 @@ namespace API.Helpers
 
         var userId = resultContext.HttpContext.User.GetUserId();
 
-        var repo = resultContext.HttpContext.RequestServices.GetRequiredService<IUserRepository>();
-        var user = await repo.GetUserByIdAsync(userId);
+        var uow = resultContext.HttpContext.RequestServices.GetRequiredService<IUnitOfWork>();
+        var user = await uow.UserRepository.GetUserByIdAsync(userId);
         user.LastActive = DateTime.Now;
-        await repo.SaveAllAsync();
+        await uow.Complete();
     }
   }
 }

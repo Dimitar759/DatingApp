@@ -33,6 +33,7 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { RolesModalComponent } from './modals/roles-modal/roles-modal.component';
 import { RouteReuseStrategy } from '@angular/router';
 import { CustomRouteReuseStrategy } from './_services/customRouteReuseStrategy';
+import { ConfirmDialogComponent } from './modals/confirm-dialog/confirm-dialog.component';
 
 
 
@@ -59,6 +60,7 @@ import { CustomRouteReuseStrategy } from './_services/customRouteReuseStrategy';
     UserManagementComponent,
     PhotoManagementComponent,
     RolesModalComponent,
+    ConfirmDialogComponent,
   ],
   imports: [
     BrowserModule,
